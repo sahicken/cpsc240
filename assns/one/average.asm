@@ -82,6 +82,7 @@ time_msg db "The time of the trip is %lf hours.",10,0
 speed_msg db "The average speed during the trip is %lf mph.",10,0
 
 float_three dq 3.0
+;float_zero dq 0.0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -117,7 +118,7 @@ pushf
 ;Backup the registers other than the GPRs
 mov rax,7
 mov rdx,0
-xsave [backup_storage_area] ; purpose [?]
+xsave [backup_storage_area]
 
 
 ;BEGIN USER NAME I/O
@@ -188,7 +189,7 @@ mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
-movsd xmm14, [rsp] ; prev xmm2
+movsd xmm14, [rsp]
 ; END ful>sna I/O
 
 ; BEGIN sna>lbc I/O
@@ -201,7 +202,7 @@ mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
-movsd xmm13, [rsp] ; prev xmm3
+movsd xmm13, [rsp]
 
 ; speed
 mov rax, 0
@@ -212,7 +213,7 @@ mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
-movsd xmm12, [rsp] ; prev xmm4
+movsd xmm12, [rsp]
 ; END sna>lbc I/O
 
 ; BEGIN lbc>sna I/O
@@ -225,7 +226,7 @@ mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
-movsd xmm11, [rsp] ; prev xmm5
+movsd xmm11, [rsp]
 
 ; speed
 mov rax, 0
@@ -236,7 +237,7 @@ mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
-movsd xmm10, [rsp] ; prev xmm6
+movsd xmm10, [rsp]
 ; END lbc>sna I/O
 
 ; let user know we're processing
@@ -252,13 +253,12 @@ addsd xmm15, xmm11
 addsd xmm14, xmm12
 addsd xmm14, xmm10
 
-; avg speed in xmm9 (speed/3)
-movsd xmm9, xmm14
-divsd xmm9, qword [float_three]
+; avg speed in xmm14 (speed/3)
+divsd xmm14, qword [float_three]
 
-; time in xmm8 (dist / avg)
-movsd xmm8, xmm15
-divsd xmm8, xmm9
+; time in xmm13 (dist / speed)
+movsd xmm13, xmm15
+divsd xmm13, xmm14
 
 ; distance msg
 mov rax, 1
@@ -269,13 +269,13 @@ call printf
 ; time msg
 mov rax, 1
 mov rdi, time_msg
-movsd xmm0, xmm8
+movsd xmm0, xmm13
 call printf
 
 ; speed msg
 mov rax, 1
 mov rdi, speed_msg
-movsd xmm0, xmm9
+movsd xmm0, xmm14
 call printf
 
 ;Restore the values to non-GPRs
