@@ -278,13 +278,17 @@ mov rdi, speed_msg
 movsd xmm0, xmm14
 call printf
 
+;Send back the avg speed
+push qword 0
+movsd [rsp], xmm14
+
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
 xrstor [backup_storage_area]
 
-;Send back the avg speed
-;cvtsd2si rax,xmm13
+movsd xmm0, [rsp]
+pop rax
 
 ;Restore the GPRs
 popf
