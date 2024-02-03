@@ -78,6 +78,8 @@ double_format_specifier db "%lf",0 ;check if null char needed
 processing db "The inputted data are being processed",10,0
 
 distance_msg db "The total distance traveled is %1.6lf miles",10,0
+time_msg db "",10,0
+speed_msg db "",10,0
 
 float_three db 3.0
 
@@ -90,8 +92,6 @@ backup_storage_area resb 832 ; why 832 [?]
 
 user_name resb name_string_size
 user_title resb title_string_size
-
-
 
 segment .text
 
@@ -161,7 +161,6 @@ call strlen
 mov [user_name+rax-1], byte 0
 ;END USER TITLE I/O
 
-
 ;thank the user
 mov rax, 0
 mov rdi, thanks
@@ -169,12 +168,11 @@ mov rsi, user_name
 mov rdx, user_title
 call printf
 
-;ful>sna
+; BEGIN ful>sna I/O
 mov rax, 0
 mov rdi, ful_sna_mi
 call printf
 
-;mov rax, 0
 mov rdi, double_format_specifier
 push qword 0
 push qword 0
@@ -183,14 +181,6 @@ call scanf
 movsd xmm15, [rsp]
 pop rax
 pop rax
-
-;;;;;;;;;;;;;;;;;;;;;
-; distance msg
-mov rax, 0
-mov rdi, distance_msg
-movsd xmm0, xmm15
-call printf
-;;;;;;;;;;;;;;;;;;;
 
 mov rax, 0
 mov rdi, ful_sna_mph
@@ -201,8 +191,9 @@ mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
 movsd xmm14, [rsp] ; prev xmm2
+; END ful>sna I/O
 
-;sna>lbc
+; BEGIN sna>lbc I/O
 mov rax, 0
 mov rdi, sna_lbc_mi
 call printf
@@ -213,7 +204,6 @@ mov rsi, rsp
 call scanf
 movsd xmm13, [rsp] ; prev xmm3
 
-
 mov rax, 0
 mov rdi, sna_lbc_mph
 call printf
@@ -223,8 +213,10 @@ mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
 movsd xmm12, [rsp] ; prev xmm4
+; END sna>lbc I/O
 
-;lbc>sna
+
+; BEGIN lbc>sna I/O
 mov rax, 0
 mov rdi, lbc_ful_mi
 call printf
@@ -235,7 +227,6 @@ mov rsi, rsp
 call scanf
 movsd xmm11, [rsp] ; prev xmm5
 
-
 mov rax, 0
 mov rdi, lbc_ful_mph
 call printf
@@ -245,6 +236,7 @@ mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
 movsd xmm10, [rsp] ; prev xmm6
+; END lbc>sna I/O
 
 ; let user know we're processing
 mov rax, 0
@@ -267,23 +259,23 @@ divsd xmm13, qword [float_three]
 movsd xmm12, xmm15
 divsd xmm12, xmm13
 
-
+; distance msg
+mov rax, 1
+mov rdi, distance_msg
+movsd xmm0, xmm15
+call printf
 
 ; time msg
-;mov rax, 0
-;mov rdi, time_msg_a
-;cvtsd2si rsi, xmm12
-;mov rdx, time_msg_b
-;call printf
+mov rax, 1
+mov rdi, time_msg
+movsd xmm0, xmm12
+call printf
 
 ; speed msg
-; rax, 0
-;mov rdi, speed_msg_a
-;cvtsd2si rsi, xmm13
-;mov rdx, speed_msg_b
-;call printf
-
-;;;;FROM ASSN 0--NEED PARTS OF THIS STILL;;;;
+mov rax, 1
+mov rdi, speed_msg
+movsd xmm0, xmm13
+call printf
 
 ;Restore the values to non-GPRs
 mov rax,7
