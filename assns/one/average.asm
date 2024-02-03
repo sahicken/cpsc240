@@ -77,12 +77,11 @@ double_format_specifier db "%lf",0 ;check if null char needed
 
 processing db "The inputted data are being processed",10,0
 
-distance_msg db "The total distance traveled is %1.6lf miles",10,0
-time_msg db "",10,0
-speed_msg db "",10,0
+distance_msg db "The total distance traveled is %lf miles.",10,0
+time_msg db "The time of the trip is %lf hours.",10,0
+speed_msg db "The average speed during the trip is %lf mph.",10,0
 
 float_three db 3.0
-
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -169,19 +168,17 @@ mov rdx, user_title
 call printf
 
 ; BEGIN ful>sna I/O
+; distance
 mov rax, 0
 mov rdi, ful_sna_mi
 call printf
 
 mov rdi, double_format_specifier
-push qword 0
-push qword 0
 mov rsi, rsp
 call scanf
 movsd xmm15, [rsp]
-pop rax
-pop rax
 
+; speed
 mov rax, 0
 mov rdi, ful_sna_mph
 call printf
@@ -194,6 +191,7 @@ movsd xmm14, [rsp] ; prev xmm2
 ; END ful>sna I/O
 
 ; BEGIN sna>lbc I/O
+; distance
 mov rax, 0
 mov rdi, sna_lbc_mi
 call printf
@@ -204,6 +202,7 @@ mov rsi, rsp
 call scanf
 movsd xmm13, [rsp] ; prev xmm3
 
+; speed
 mov rax, 0
 mov rdi, sna_lbc_mph
 call printf
@@ -217,6 +216,7 @@ movsd xmm12, [rsp] ; prev xmm4
 
 
 ; BEGIN lbc>sna I/O
+; distance
 mov rax, 0
 mov rdi, lbc_ful_mi
 call printf
@@ -227,6 +227,7 @@ mov rsi, rsp
 call scanf
 movsd xmm11, [rsp] ; prev xmm5
 
+; speed
 mov rax, 0
 mov rdi, lbc_ful_mph
 call printf
