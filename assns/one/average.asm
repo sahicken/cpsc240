@@ -81,7 +81,7 @@ distance_msg db "The total distance traveled is %lf miles.",10,0
 time_msg db "The time of the trip is %lf hours.",10,0
 speed_msg db "The average speed during the trip is %lf mph.",10,0
 
-float_three db 3.0
+float_three dq 3.0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -173,6 +173,7 @@ mov rax, 0
 mov rdi, ful_sna_mi
 call printf
 
+mov rax, 0
 mov rdi, double_format_specifier
 mov rsi, rsp
 call scanf
@@ -214,7 +215,6 @@ call scanf
 movsd xmm12, [rsp] ; prev xmm4
 ; END sna>lbc I/O
 
-
 ; BEGIN lbc>sna I/O
 ; distance
 mov rax, 0
@@ -244,21 +244,21 @@ mov rax, 0
 mov rdi, processing
 call printf
 
-; total distance in xmm1
+; total distance in xmm15
 addsd xmm15, xmm13
 addsd xmm15, xmm11
 
-; total speed in xmm2
+; total speed in xmm14
 addsd xmm14, xmm12
 addsd xmm14, xmm10
 
-; avg speed in xmm3 (speed/3)
-movsd xmm13, xmm14
-divsd xmm13, qword [float_three]
+; avg speed in xmm9 (speed/3)
+movsd xmm9, xmm14
+divsd xmm9, qword [float_three]
 
-; time in xmm4 (dist / avg)
-movsd xmm12, xmm15
-divsd xmm12, xmm13
+; time in xmm8 (dist / avg)
+movsd xmm8, xmm15
+divsd xmm8, xmm9
 
 ; distance msg
 mov rax, 1
@@ -269,13 +269,13 @@ call printf
 ; time msg
 mov rax, 1
 mov rdi, time_msg
-movsd xmm0, xmm12
+movsd xmm0, xmm8
 call printf
 
 ; speed msg
 mov rax, 1
 mov rdi, speed_msg
-movsd xmm0, xmm13
+movsd xmm0, xmm9
 call printf
 
 ;Restore the values to non-GPRs
@@ -284,7 +284,7 @@ mov rdx,0
 xrstor [backup_storage_area]
 
 ;Send back the avg speed
-cvtsd2si rax,xmm13
+;cvtsd2si rax,xmm13
 
 ;Restore the GPRs
 popf
