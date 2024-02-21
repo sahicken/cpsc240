@@ -16,25 +16,25 @@
 ;  Author email: sahicken@csu.fullerton.edu
 ;
 ;Program information
-;  Program name: Average Driving Time
+;  Program name: Computer Triangle
 ;  Programming languages: One module in C, one in X86, and one in bash.
-;  Date program began: 2024-Jan-23
-;  Date of last update: 2024-Apr-2x
-;  Files in this program: driver.c, average.asm, r.sh.  At a future date rg.sh may be added.
-;  Testing: indev (pre-alpha)
-;  Status: won't compile
+;  Date program began: 2024-Feb-19
+;  Date of last update: 2024-Feb-2x
+;  Files in this program: driver.c, manager.asm, isfloat.asm, r.sh, rg.sh
+;  Testing: indev
+;  Status: compiles
 ;
 ;Purpose
-;  This program is a starting point for those learning to program in x86 assembly.
+;  This function and program is a specific computation for triangles
 ;
 ;This file:
-;  File name: average.asm
+;  File name: manager.asm
 ;  Language: X86-64
 ;  Max page width: 124 columns
-;  Assemble (standard): nasm -l average.lis -o average.o average.asm
-;  Assemble (debug): nasm -g dwarf -l average.lis -o average.o average.asm
+;  Assemble (standard): nasm -l manager.lis -o manager.o manager.asm
+;  Assemble (debug): nasm -g dwarf -l manager.lis -o manager.o manager.asm
 ;  Optimal print specification: Landscape, 7 points, monospace, 8½x11 paper
-;  Prototype of this function: float average();
+;  Prototype of this function: double manager();
 ; 
 ;
 ;
@@ -154,6 +154,10 @@ mov rdi, greeting
 mov rsi, title
 mov rdx, name
 call printf
+
+
+
+
 
 ; BEGIN FIRST SIDE I/O
 ; output prompt for first side
