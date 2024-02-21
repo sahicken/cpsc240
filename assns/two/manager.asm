@@ -48,17 +48,21 @@ extern scanf
 extern fgets
 extern stdin
 extern strlen
+extern atof
+extern isfloat
 
 global manager
 
-easy_str_sz equ 50 ; simple strings < 50 bytes
+easy_str_sz equ 50 ; strings < 50 bytes
 
 segment .data
 ;This section (or segment) is for declaring initialized arrays
 
-prompt_for_name db "Please enter your name: ",0
-prompt_for_title db "Please enter your title (Sargent, Chief, CEO, President, Teacher, etc): ",0
-thanks db "Good morning %s %s. We take care of all your triangles.",10,0
+prompt_name db "Please enter your name: ",0
+prompt_title db "Please enter your title (Sargent, Chief, CEO, President, Teacher, etc): ",0
+greeting db "Good morning %s %s. We take care of all your triangles.",10,0
+
+msg_failed db "Invalid input. Try again: ",0
 
 fmt_dbl db "%lf",0
 
@@ -69,8 +73,8 @@ align 64
 ; required for xstor and xrstor instructions
 backup_storage_area resb 832
 
-user_name resb easy_str_sz
-user_title resb easy_str_sz
+name resb easy_str_sz
+title resb easy_str_sz
 
 segment .text
 
@@ -101,53 +105,52 @@ mov rdx,0
 xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
-;BEGIN USER NAME I/O
-;Output prompt for the user (name)
+;BEGIN NAME I/O
+; output prompt for name
 mov rax, 0
-mov rdi, prompt_for_name
+mov rdi, prompt_name
 call printf
 
-;Input user's name
+; input name
 mov rax, 0
-mov rdi, user_name
+mov rdi, name
 mov rsi, easy_str_sz
 mov rdx, [stdin]
 call fgets
 
-;Remove newline from name
+; remove newline from name
 mov rax, 0
-mov rdi, user_name
+mov rdi, name
 call strlen
-mov [user_name+rax-1], byte 0
-;END USER NAME I/O
+mov [name+rax-1], byte 0
+;END NAME I/O
 
-;BEGIN USER TITLE I/O
-;Output prompt for the user (title)
+;BEGIN TITLE I/O
+; output prompt for tile
 mov rax, 0
-mov rdi, prompt_for_title
+mov rdi, prompt_title
 call printf
 
-;Input user's title
+; input title
 mov rax, 0
-mov rdi, user_title
+mov rdi, title
 mov rsi, easy_str_sz
 mov rdx, [stdin]
 call fgets
 
-;Remove newline from title
+; remove newline (title)
 mov rax, 0
-mov rdi, user_title
+mov rdi, title
 call strlen
-mov [user_name+rax-1], byte 0
-;END USER TITLE I/O
+mov [name+rax-1], byte 0
+;END TITLE I/O
 
-;thank the user
+; greet the user
 mov rax, 0
-mov rdi, thanks
-mov rsi, user_name
-mov rdx, user_title
+mov rdi, greeting
+mov rsi, name
+mov rdx, title
 call printf
-
 
 failed:
 ;Block that accepts user number and keeps for later validation
@@ -164,16 +167,16 @@ call strlen
 ;block to remove newline
 mov [rsp+rax-1], byte 0
 
-; check if inputer number is float number
+; check if inputted number is float number
 mov rax, 0
 mov rdi, rsp
-call isfloat ; NEEDS EXTERN .ASM
+call isfloat
 cmp rax, 0
 jne success
 
-; FAILED MSG -- SKIPPED IF SUCCESSFUL
+; skipped if successful
 mov rax, 0
-mov rdi, failstring
+mov rdi, msg_failed
 call printf
 
 success:
