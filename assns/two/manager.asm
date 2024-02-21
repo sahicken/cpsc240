@@ -148,6 +148,43 @@ mov rsi, user_name
 mov rdx, user_title
 call printf
 
+
+failed:
+;Block that accepts user number and keeps for later validation
+sub rsp, 4096
+mov rdi, rsp
+mov rsi, 4096
+mov rdx, [stdin]
+call fgets
+
+;block to fix user input
+mov rax, 0
+mov rdi, rsp
+call strlen
+;block to remove newline
+mov [rsp+rax-1], byte 0
+
+; check if inputer number is float number
+mov rax, 0
+mov rdi, rsp
+call isfloat ; NEEDS EXTERN .ASM
+cmp rax, 0
+jne success
+
+; FAILED MSG -- SKIPPED IF SUCCESSFUL
+mov rax, 0
+mov rdi, failstring
+call printf
+
+success:
+
+;convert inputted value to float
+mov rax, 0
+mov rdi, rsp
+call atof ;external
+movsd xmm15, xmm0
+add rsp, 4096
+
 ;BEGIN .TEXT POSTREQS
 ;Restore the values to non-GPRs
 mov rax,7
@@ -177,4 +214,3 @@ pop rbp   ;Restore rbp to the base of the activation record of the caller progra
 ret
 ;End of the function helloworld ====================================================================
 ;END .TEXT POSTREQS
-
