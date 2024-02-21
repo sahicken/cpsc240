@@ -145,14 +145,14 @@ call fgets
 mov rax, 0
 mov rdi, title
 call strlen
-mov [name+rax-1], byte 0
+mov [title+rax-1], byte 0
 ;END TITLE I/O
 
 ; greet the user
 mov rax, 0
 mov rdi, greeting
-mov rsi, name
-mov rdx, title
+mov rsi, title
+mov rdx, name
 call printf
 
 ; BEGIN FIRST SIDE I/O
