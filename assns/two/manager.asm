@@ -62,7 +62,10 @@ prompt_name db "Please enter your name: ",0
 prompt_title db "Please enter your title (Sargent, Chief, CEO, President, Teacher, etc): ",0
 greeting db "Good morning %s %s. We take care of all your triangles.",10,0
 
-msg_failed db "Invalid input. Try again: ",0
+prompt_failed db "Invalid input. Try again: ",0
+prompt_first_side db "Please enter the length of the first side: ",0
+prompt_second_side db "Please enter the length of the second side: ",0
+prompt_angle db "Please enter the size of the angle in degrees: ",0
 
 fmt_dbl db "%lf",0
 
@@ -152,19 +155,26 @@ mov rsi, name
 mov rdx, title
 call printf
 
-failed:
-;Block that accepts user number and keeps for later validation
+; BEGIN FIRST SIDE I/O
+; output prompt for first side
+mov rax, 0
+mov rdi, prompt_first_side
+call printf
+
+failed_first_side:
+
+; block that accepts user number and keeps for later validation
 sub rsp, 4096
 mov rdi, rsp
 mov rsi, 4096
 mov rdx, [stdin]
 call fgets
 
-;block to fix user input
+; block to fix user input
 mov rax, 0
 mov rdi, rsp
 call strlen
-;block to remove newline
+; block to remove newline
 mov [rsp+rax-1], byte 0
 
 ; check if inputted number is float number
@@ -172,21 +182,131 @@ mov rax, 0
 mov rdi, rsp
 call isfloat
 cmp rax, 0
-jne success
+jne success_first_side
 
-; skipped if successful
+; skip if success
 mov rax, 0
-mov rdi, msg_failed
+mov rdi, prompt_failed
 call printf
 
-success:
+; repeat if failed
+jmp failed_first_side
+; END FIRST SIDE I/O
 
-;convert inputted value to float
+success_first_side:
+
+; convert inputted value to float
 mov rax, 0
 mov rdi, rsp
-call atof ;external
+call atof
 movsd xmm15, xmm0
 add rsp, 4096
+
+
+
+
+
+; BEGIN SECOND SIDE I/O
+; output prompt for first side
+mov rax, 0
+mov rdi, prompt_second_side
+call printf
+
+failed_second_side:
+
+; block that accepts user number and keeps for later validation
+sub rsp, 4096
+mov rdi, rsp
+mov rsi, 4096
+mov rdx, [stdin]
+call fgets
+
+; block to fix user input
+mov rax, 0
+mov rdi, rsp
+call strlen
+; block to remove newline
+mov [rsp+rax-1], byte 0
+
+; check if inputted number is float number
+mov rax, 0
+mov rdi, rsp
+call isfloat
+cmp rax, 0
+jne success_second_side
+
+; skip if success
+mov rax, 0
+mov rdi, prompt_failed
+call printf
+
+; repeat if failed
+jmp failed_second_side
+; END SECOND SIDE I/O
+
+success_second_side:
+
+; convert inputted value to float
+mov rax, 0
+mov rdi, rsp
+call atof
+movsd xmm14, xmm0
+add rsp, 4096
+
+
+
+
+
+; BEGIN ANGLE I/O
+; output prompt for first side
+mov rax, 0
+mov rdi, prompt_angle
+call printf
+
+failed_angle:
+
+; block that accepts user number and keeps for later validation
+sub rsp, 4096
+mov rdi, rsp
+mov rsi, 4096
+mov rdx, [stdin]
+call fgets
+
+; block to fix user input
+mov rax, 0
+mov rdi, rsp
+call strlen
+; block to remove newline
+mov [rsp+rax-1], byte 0
+
+; check if inputted number is float number
+mov rax, 0
+mov rdi, rsp
+call isfloat
+cmp rax, 0
+jne success_angle
+
+; skip if success
+mov rax, 0
+mov rdi, prompt_failed
+call printf
+
+; repeat if failed
+jmp failed_angle
+; END ANGLE I/O
+
+success_angle:
+
+; convert inputted value to float
+mov rax, 0
+mov rdi, rsp
+call atof
+movsd xmm13, xmm0
+add rsp, 4096
+
+
+
+
 
 ;BEGIN .TEXT POSTREQS
 ;Restore the values to non-GPRs
