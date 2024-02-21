@@ -56,9 +56,9 @@ easy_str_sz equ 50 ; simple strings < 50 bytes
 segment .data
 ;This section (or segment) is for declaring initialized arrays
 
-prompt_for_name db "Please enter your first and last names: ",0
-prompt_for_title db "Please enter your title such as Lieutenant, Chief, Mr, Ms, Influencer, Chairman, Freshman, Foreman, Project Leader, etc: ",0
-thanks db "Thank you %s %s",10,0
+prompt_for_name db "Please enter your name: ",0
+prompt_for_title db "Please enter your title (Sargent, Chief, CEO, President, Teacher, etc): ",0
+thanks db "Good morning %s %s. We take care of all your triangles.",10,0
 
 fmt_dbl db "%lf",0
 
