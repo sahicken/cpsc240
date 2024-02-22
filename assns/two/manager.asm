@@ -60,14 +60,17 @@ segment .data
 
 prompt_name db "Please enter your name: ",0
 prompt_title db "Please enter your title (Sargent, Chief, CEO, President, Teacher, etc): ",0
-greeting db "Good morning %s %s. We take care of all your triangles.",10,0
+msg_greeting db "Good morning %s %s. We take care of all your triangles.",10,0
 
 prompt_failed db "Invalid input. Try again: ",0
 prompt_first_side db "Please enter the length of the first side: ",0
 prompt_second_side db "Please enter the length of the second side: ",0
 prompt_angle db "Please enter the size of the angle in degrees: ",0
 
-fmt_dbl db "%lf",0
+msg_thanks db "Thanks you %s. ",0
+msg_entry db "You entered %lf %lf %lf.",10,0
+msg_third_side db "The length of the third side is %lf",10,0
+msg_driver db "This length will be sent to the driver program.",10,0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -150,7 +153,7 @@ mov [title+rax-1], byte 0
 
 ; greet the user
 mov rax, 0
-mov rdi, greeting
+mov rdi, msg_greeting
 mov rsi, title
 mov rdx, name
 call printf
@@ -310,9 +313,23 @@ add rsp, 4096
 
 
 
+; thank the user
+mov rax, 0
+mov rdi, msg_thanks
+mov rsi, name
+call printf
 
+; load entries
+movsd xmm0, xmm15
+movsd xmm1, xmm14
+movsd xmm2, xmm13
 
-;BEGIN .TEXT POSTREQS
+; print their entries
+mov rax, 3
+mov rdi, msg_entry
+call printf
+
+;BEGIN .TEXT POSTREQS (BROKEN)
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
@@ -340,4 +357,4 @@ pop rbx
 pop rbp   ;Restore rbp to the base of the activation record of the caller program
 ret
 ;End of the function helloworld ====================================================================
-;END .TEXT POSTREQS
+;END .TEXT POSTREQS (BROKEN)
