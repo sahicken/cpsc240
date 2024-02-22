@@ -49,7 +49,8 @@ extern fgets
 extern stdin
 extern strlen
 extern atof
-extern isfloat
+extern isfloate
+extern cos
 
 global manager
 
@@ -71,6 +72,8 @@ msg_thanks db "Thanks you %s. ",0
 msg_entry db "You entered %lf %lf %lf.",10,0
 msg_third_side db "The length of the third side is %lf",10,0
 msg_driver db "This length will be sent to the driver program.",10,0
+
+deg_to_rad dq 0.01745 ; multiply this constant for conversion
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -328,6 +331,44 @@ movsd xmm2, xmm13
 mov rax, 3
 mov rdi, msg_entry
 call printf
+
+
+;BEGIN TRIANGLE COMPUTATION
+; store radians instead of degrees
+mulsd xmm13, qword [deg_to_rad]
+
+; BEGIN bc*cos(alpha)
+; store cos(alpha) from radians
+mov rax, 1
+movsd xmm0, xmm13
+call cos
+movsd xmm13, xmm0
+
+; multiply cos(alpha) by 2bc (add bc to bc)
+mulsd xmm13, xmm15 ; b
+mulsd xmm13, xmm14 ; c
+movsd xmm8, xmm13 ; store bc
+addsd xmm13, xmm8 ; add bc (to bc)
+
+; square first side
+movsd xmm8, xmm15
+mulsd xmm15, xmm8
+
+; square second side
+movsd xmm8, xmm14
+mulsd xmm14, xmm8
+
+; b^2+c^2-2bc*cos(alpha)
+addsd xmm15, xmm14
+subsd xmm15, xmm13
+
+; square to get the answer
+movsd xmm8, xmm15
+sqrtsd xmm15, xmm8
+
+;END TRIANGLE COMPUTATION
+
+
 
 ;BEGIN .TEXT POSTREQS (BROKEN)
 ;Restore the values to non-GPRs
