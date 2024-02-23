@@ -49,7 +49,7 @@ extern fgets
 extern stdin
 extern strlen
 extern atof
-extern isfloate
+extern isfloat
 extern cos
 
 global manager
@@ -367,6 +367,20 @@ movsd xmm8, xmm15
 sqrtsd xmm15, xmm8
 
 ;END TRIANGLE COMPUTATION
+
+
+
+
+; DEBUG;;;;;;;;;;;;;;
+mov rax, 0
+mov rdi, msg_thanks
+call printf
+
+mov rax, 1
+movsd xmm0, xmm15
+call printf
+; DEBUG;;;;;;;;;;;;;;
+
 
 
 
