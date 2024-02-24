@@ -371,28 +371,17 @@ sqrtsd xmm15, xmm8
 
 
 
-; DEBUG;;;;;;;;;;;;;;
-mov rax, 0
-mov rdi, msg_thanks
-call printf
-
-mov rax, 1
-movsd xmm0, xmm15
-call printf
-; DEBUG;;;;;;;;;;;;;;
-
-
-
-
 ;BEGIN .TEXT POSTREQS (BROKEN)
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
 xrstor [backup_storage_area]
 
-; possible error
-movsd xmm0, [rsp]
-pop rax
+;BEGIN DBL RET
+;Send back the double
+movsd xmm0, xmm15
+;xmm0 now holds the double
+;END DBL RET
 
 ;Restore the GPRs
 popf
