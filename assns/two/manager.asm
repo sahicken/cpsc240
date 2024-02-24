@@ -362,7 +362,7 @@ mulsd xmm14, xmm8
 addsd xmm15, xmm14
 subsd xmm15, xmm13
 
-; square to get the answer
+; square root to get answer
 movsd xmm8, xmm15
 sqrtsd xmm15, xmm8
 ;END LAW OF COSINES
