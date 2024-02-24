@@ -382,19 +382,18 @@ call printf
 ;;;;;;;;;;;DEBUG;;;;;;;;;;;;;;
 
 
-
-
 ;BEGIN .TEXT POSTREQS (BROKEN)
+;Send back the avg speed
+push qword 0
+movsd [rsp], xmm15
+
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
 xrstor [backup_storage_area]
 
-;BEGIN DBL RET
-;Send back the double
-movsd xmm0, xmm15
-;xmm0 now holds the double
-;END DBL RET
+movsd xmm0, [rsp]
+pop rax
 
 ;Restore the GPRs
 popf
