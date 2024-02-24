@@ -1,8 +1,8 @@
 #/bin/bash
 
-#Program name "Begin Assembly"
-#Author: F. Holliday
-#This file is the script file that accompanies the "Begin Assembly" program.
+#Program name "Compute Triangle"
+#Authors: F. Holliday, S. Hicken
+#This file is the script file that accompanies the "Compute Triangle" program.
 #Prepare for execution in normal mode (not gdb mode).
 
 #Delete some un-needed files
@@ -21,9 +21,9 @@ gcc  -m64 -g -Wall -no-pie -o driver.o -std=c2x -c driver.c
 echo "Link the object modules to create an executable file"
 gcc -m64 -g -no-pie -o learn.out isfloat.o manager.o driver.o -std=c2x -Wall -z noexecstack -lm
 
-echo "Execute the program that new students use to understand assembly programming"
-chmod +x learn.out
-gdb ./learn.out
+echo "Execute the program to calculate triangles"
+chmod +x triangle.out
+./triangle.out
 
 echo "This bash script will now terminate."
 
