@@ -1,5 +1,5 @@
 ;****************************************************************************************************************************
-; Program name: "Average Driving Time".  This program calculates the average driving time of a driver moving around NOC.     *
+; Program name: "Compute Triangle".  This program calculates the average driving time of a driver moving around NOC.     *
 ;                                                                                                                            *
 ; This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License  *
 ; version 3 as published by the Free Software Foundation.  This program is distributed in the hope that it will be useful,   *
@@ -16,13 +16,13 @@
 ;  Author email: sahicken@csu.fullerton.edu
 ;
 ;Program information
-;  Program name: Computer Triangle
+;  Program name: Compute Triangle
 ;  Programming languages: One module in C, one in X86, and one in bash.
 ;  Date program began: 2024-Feb-19
-;  Date of last update: 2024-Feb-2x
+;  Date of last update: 2024-Feb-23
 ;  Files in this program: driver.c, manager.asm, isfloat.asm, r.sh, rg.sh
-;  Testing: indev
-;  Status: compiles
+;  Testing: working
+;  Status: alpha
 ;
 ;Purpose
 ;  This function and program is a specific computation for triangles
@@ -73,11 +73,6 @@ msg_entry db "You entered %lf %lf %lf.",10,0
 msg_third_side db "The length of the third side is %lf",10,0
 msg_driver db "This length will be sent to the driver program.",10,0
 
-;BEGIN REMOVE LATER
-msg_dbl_debug db "here's your debug: %lf",10,0
-;END REMOVE LATER
-
-
 deg_to_rad dq 0.01745 ; multiply this constant for conversion
 
 segment .bss
@@ -93,6 +88,8 @@ title resb easy_str_sz
 segment .text
 
 manager:
+
+
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -119,6 +116,8 @@ mov rdx,0
 xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
+
+
 ;BEGIN NAME I/O
 ; output prompt for name
 mov rax, 0
@@ -139,6 +138,8 @@ call strlen
 mov [name+rax-1], byte 0
 ;END NAME I/O
 
+
+
 ;BEGIN TITLE I/O
 ; output prompt for tile
 mov rax, 0
@@ -157,7 +158,6 @@ mov rax, 0
 mov rdi, title
 call strlen
 mov [title+rax-1], byte 0
-;END TITLE I/O
 
 ; greet the user
 mov rax, 0
@@ -165,8 +165,7 @@ mov rdi, msg_greeting
 mov rsi, title
 mov rdx, name
 call printf
-
-
+;END TITLE I/O
 
 
 
@@ -206,7 +205,6 @@ call printf
 
 ; repeat if failed
 jmp failed_first_side
-; END FIRST SIDE I/O
 
 success_first_side:
 
@@ -216,8 +214,7 @@ mov rdi, rsp
 call atof
 movsd xmm15, xmm0
 add rsp, 4096
-
-
+; END FIRST SIDE I/O
 
 
 
@@ -257,7 +254,6 @@ call printf
 
 ; repeat if failed
 jmp failed_second_side
-; END SECOND SIDE I/O
 
 success_second_side:
 
@@ -267,8 +263,7 @@ mov rdi, rsp
 call atof
 movsd xmm14, xmm0
 add rsp, 4096
-
-
+; END SECOND SIDE I/O
 
 
 
@@ -308,7 +303,6 @@ call printf
 
 ; repeat if failed
 jmp failed_angle
-; END ANGLE I/O
 
 success_angle:
 
@@ -318,6 +312,7 @@ mov rdi, rsp
 call atof
 movsd xmm13, xmm0
 add rsp, 4096
+; END ANGLE I/O
 
 
 
@@ -338,12 +333,12 @@ mov rdi, msg_entry
 call printf
 
 
-;BEGIN TRIANGLE COMPUTATION
-; store radians instead of degrees
+
+;BEGIN LAW OF COSINES
+; convert "alpha" to radians
 mulsd xmm13, qword [deg_to_rad]
 
-; BEGIN bc*cos(alpha)
-; store cos(alpha) from radians
+; calculate bc*cos(alpha)
 mov rax, 1
 movsd xmm0, xmm13
 call cos
@@ -370,20 +365,12 @@ subsd xmm15, xmm13
 ; square to get the answer
 movsd xmm8, xmm15
 sqrtsd xmm15, xmm8
-
-;END TRIANGLE COMPUTATION
-
-
-;;;;;;;;;;;DEBUG;;;;;;;;;;;;;;
-mov rax, 1
-movsd xmm0, xmm15
-mov rdi, msg_dbl_debug
-call printf
-;;;;;;;;;;;DEBUG;;;;;;;;;;;;;;
+;END LAW OF COSINES
 
 
-;BEGIN .TEXT POSTREQS (BROKEN)
-;Send back the avg speed
+
+;BEGIN .TEXT POSTREQS
+;Send back length of "third" side
 push qword 0
 movsd [rsp], xmm15
 
@@ -412,5 +399,4 @@ pop rcx
 pop rbx
 pop rbp   ;Restore rbp to the base of the activation record of the caller program
 ret
-;End of the function helloworld ====================================================================
 ;END .TEXT POSTREQS (BROKEN)
