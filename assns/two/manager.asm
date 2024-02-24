@@ -73,6 +73,11 @@ msg_entry db "You entered %lf %lf %lf.",10,0
 msg_third_side db "The length of the third side is %lf",10,0
 msg_driver db "This length will be sent to the driver program.",10,0
 
+;BEGIN REMOVE LATER
+msg_dbl_debug db "here's your debug: %lf",10,0
+;END REMOVE LATER
+
+
 deg_to_rad dq 0.01745 ; multiply this constant for conversion
 
 segment .bss
@@ -367,6 +372,14 @@ movsd xmm8, xmm15
 sqrtsd xmm15, xmm8
 
 ;END TRIANGLE COMPUTATION
+
+
+;;;;;;;;;;;DEBUG;;;;;;;;;;;;;;
+mov rax, 1
+movsd xmm0, xmm15
+mov rdi, msg_dbl_debug
+call printf
+;;;;;;;;;;;DEBUG;;;;;;;;;;;;;;
 
 
 
