@@ -254,7 +254,10 @@ addsd xmm14, xmm12
 addsd xmm14, xmm10
 
 ; avg speed in xmm14 (speed/3)
-divsd xmm14, qword [float_three]
+;COMMENT LINE WON'T COMPILE FOR PROF.
+;divsd xmm14, qword [float_three]
+movsd  xmm9, [float_three]
+divsd  xmm14, xmm9
 
 ; time in xmm13 (dist / speed)
 movsd xmm13, xmm15
