@@ -372,6 +372,7 @@ sqrtsd xmm15, xmm8
 ;BEGIN .TEXT POSTREQS
 ;Send back length of "third" side
 push qword 0
+push qword 0
 movsd [rsp], xmm15
 
 ;Restore the values to non-GPRs
@@ -380,6 +381,7 @@ mov rdx,0
 xrstor [backup_storage_area]
 
 movsd xmm0, [rsp]
+pop rax
 pop rax
 
 ;Restore the GPRs
