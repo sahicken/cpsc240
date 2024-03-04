@@ -5,9 +5,10 @@ extern double manager();
 
 int main(void)
 {
-    printf("Welcome to Amazing Triangles programmed by Steven Hicken on %s.\n", __DATE__);
-    double tri = manager();
-    printf("The driver received this number %lf and will simply keep it.\n", tri);
-    printf("An integer zero will now be sent to the operating system. Bye.\n");
+    printf("Welcome to Arrays of floating point numbers.\n");
+    printf("Brought to you by Steven Hicken.\n");
+    double variance = manager();
+    printf("Main received this number %lf and will keep it for future use.\n", variance);
+    printf("Main will return 0 to the operating system. Bye.\n");
     return 0;
 }
