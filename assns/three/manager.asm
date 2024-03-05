@@ -20,7 +20,7 @@
 ;  Programming languages: One module in C, one in X86, and one in bash.
 ;  Date program began: 2024-Feb-19
 ;  Date of last update: 2024-Feb-23
-;  Files in this program: driver.c, manager.asm, isfloat.asm, r.sh, rg.sh
+;  Files in this program: driver.c, manager.asm, isfloat.asm, r.sh, input_array.asm, output_array.c
 ;  Testing: working
 ;  Status: alpha
 ;
