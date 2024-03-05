@@ -12,10 +12,15 @@ fmt_str db "%s",0
 
 section .bss
 
+align 64
+; required for xstor and xrstor instructions
+backup_storage_area resb 832
+
 section .text
 
 input_array:
 
+;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
 push rbp
 mov rbp, rsp
@@ -34,9 +39,16 @@ push r14
 push r15
 pushf
 
-mov qword r15, rdi   ; pointer to front of array
-mov qword r14, rsi   ; size of array (# elements)
-mov qword r13, 0     ; counter = 0 (change to rcx)
+; backup all other registers (meaning not GPRs)
+mov rax,7
+mov rdx,0
+xsave [backup_storage_area]
+;END .TEXT PREREQS
+
+mov r13, rdi   ; pointer to front of array
+mov r14, rsi   ; size of array (# elements)
+mov r15, 0     ; counter = 0 (change to rcx)
+sub rsp, 1024  ; set asisde space on stack
 
 
 
@@ -142,6 +154,64 @@ mov qword rax, r13                      ; Copies # of elements in r13 to rax.
 
 
 
+;BEGIN .TEXT PREREQS
+; backup GPRs (General Purpose Registers)
+push rbp
+mov rbp, rsp
+push rbx
+push rcx
+push rdx
+push rdi
+push rsi
+push r8
+push r9
+push r10
+push r11
+push r12
+push r13
+push r14
+push r15
+pushf
+
+; backup all other registers (meaning not GPRs)
+mov rax,7
+mov rdx,0
+xsave [backup_storage_area]
+;END .TEXT PREREQS
+
+
+
+;BEGIN MANAGER I/O
+; output prompt for name
+mov rax, 0
+mov rdi, msg_arr_tx_aofb
+call printf
+
+mov rax, 0
+mov rdi, msg_arr_tx_bofb
+call printf
+
+mov rax, 0
+mov rdi, prompt_arr_tx
+call printf
+;END MANAGER I/O
+
+
+
+;BEGIN .TEXT POSTREQS
+;Send back length of "third" side
+push qword 0
+push qword 0
+movsd [rsp], xmm15
+
+;Restore the values to non-GPRs
+mov rax,7
+mov rdx,0
+xrstor [backup_storage_area]
+
+movsd xmm0, [rsp]
+pop rax
+pop rax
 
 ;Restore the GPRs
 popf
@@ -160,3 +230,4 @@ pop rcx
 pop rbx
 pop rbp   ;Restore rbp to the base of the activation record of the caller program
 ret
+;END .TEXT POSTREQS (BROKEN)
