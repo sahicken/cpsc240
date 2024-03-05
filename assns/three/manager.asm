@@ -64,7 +64,7 @@ align 64
 backup_storage_area resb 832
 
 ;;;how much?;;;
-array resq 100
+array resq 12
 
 segment .text
 
