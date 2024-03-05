@@ -46,76 +46,65 @@ mov rdx,0
 xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
+
+
 mov r13, rdi   ; pointer to front of array
 mov r14, rsi   ; size of array (# elements)
 mov r15, 0     ; counter = 0 (change to rcx)
 sub rsp, 1024  ; set asisde space on stack
 
-;---------------------------------START OF LOOP---------------------------------------------
-begin_loop:
 
-; Scanf function called to take user input.
+
+; BEGIN LOOP
+begin_loop:
+; take user input
 mov rax, 0
 mov rdi, fmt_str
 mov rsi, rsp
 call scanf
 
-; Tests if Control + D is entered to finish inputing into array.
+; tests ctrl-D (several 1's aka -1)
 cdqe
 cmp rax, -1
-je end_of_loop ; If control + D is entered, jump to end_of_loop.
+je end_loop
 
-;------------------------------INPUT VALIDATION---------------------------------------------
-; Checks to see if each character in the input string of integers is from 0 to 9.
-
+; now validate the input
 mov rax, 0
 mov rdi, rsp
 call isfloat
-cmp rax, 0                              ; Checks to see if isinteger returned true/false.
-je invalid_input                        ; If isinteger returns 0. jump to not_an_int label.
-
-;---------------------------------ASCII TO LONG---------------------------------------------
-; Converts string of characters (user input) into a long integer. 
+cmp rax, 0                    ; Checks to see if isfloat is false
+je invalid_input              ; jump to invalid_input if false
 
 mov rax, 0
 mov rdi, rsp
 call atof
+movsd [r13 + 8 * r15], xmm0   ; Copies float into array
 
-;--------------------------------COPY INTO ARRAY--------------------------------------------
-; Adds copy of long integer saved in r12 into array at index of counter (r13).
-
-movsd [r13 + 8 * r15], xmm0                ; Copies user input into array at index of r13.
-inc r15                                ; Increments counter r13 by 1.
-
-;-----------------------------ARRAY CAPACITY TEST-------------------------------------------
-; Tests to see if max array capacity has been reached.
-cmp r13, r14                            ; Compares # of elements (r13) to capacity (r14).
-je exit                                 ; If # of elements equals capacity, exit loop.
-
+inc r15                       ; Increments counter (by 1)
+; Tests array capacity
+cmp r15, r14                  ; Compares current index with size
+je end_loop                   ; If index equals size, exit
 ; Restarts loop.
 jmp begin_loop
 
-;--------------------------------INVALID INPUT----------------------------------------------
-; Prints out invalid input statement and restarts loop and pops stack to offset initial push
-; at the beginning of the loop.
-
+; inform user of invalid input
 invalid_input:
+mov rax, 0
 mov rdi, stringFormat
 mov rsi, invalid 
-mov rax, 0
 call printf
-jmp begin_loop                         ; Restarts loop.
+jmp begin_loop ; repeat loop
+; END LOOP
 
-;---------------------------------END OF LOOP-----------------------------------------------
 
-; After control+D is entered the loop is skipped and so is the pop in the loop
-; therefore this controlD block makes up for that missed pop.
-end_of_loop:
+
+; loop ends after ctrl-D
+end_loop:
 add rsp, 1024
 
 
-;BEGIN .TEXT POSTREQS
 
+;BEGIN .TEXT POSTREQS
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
