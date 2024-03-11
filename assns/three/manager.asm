@@ -124,7 +124,12 @@ call input_array
 mov r15, rax
 
 ; calculate the mean
-
+mov rax, 1
+mov rdi, array
+mov rsi, r15
+call compute_mean
+; store mean for later use
+movsd xmm15, xmm0
 
 
 ;BEGIN .TEXT POSTREQS
