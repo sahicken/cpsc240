@@ -46,6 +46,8 @@
 extern printf
 global manager
 
+arr_sz equ 12
+
 segment .data
 ;This section (or segment) is for declaring initialized arrays
 
@@ -63,8 +65,7 @@ align 64
 ; required for xstor and xrstor instructions
 backup_storage_area resb 832
 
-;;;how much?;;;
-array resq 12
+array resq arr_sz
 
 segment .text
 
@@ -111,6 +112,18 @@ mov rax, 0
 mov rdi, prompt_arr_tx
 call printf
 ;END MANAGER I/O
+
+; input the array of floats
+mov rax, 0
+; move the pointer into 1st arg
+mov rdi, array
+; 2nd arg is max size of array
+mov rsi, arr_sz
+call input_array
+; now store *true* size of array
+mov r15, rax
+
+; calculate the mean
 
 
 
