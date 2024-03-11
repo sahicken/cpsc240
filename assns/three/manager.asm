@@ -123,13 +123,23 @@ call input_array
 ; now store *true* size of array
 mov r15, rax
 
-; calculate the mean
-mov rax, 1
+; compute the mean
+mov rax, 0
 mov rdi, array
 mov rsi, r15
 call compute_mean
 ; store mean for later use
 movsd xmm15, xmm0
+
+; compute variance
+mov rax, 1
+mov rdi, array
+mov rsi, r15
+; this is the mean from before
+movsd xmm0, xmm15
+call compute_variance
+; store variance for later
+movsd xmm14, xmm0
 
 
 ;BEGIN .TEXT POSTREQS
