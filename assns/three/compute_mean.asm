@@ -87,14 +87,20 @@ xsave [backup_storage_area]
 
 ; will use loop instruction and rcx
 mov r15, rdi      ; pointer to front of array
-mov rcx, rsi      ; size of array (# elements)
+mov r14, rsi      ; size of array (# elements)
 movsd xmm15, 0.0  ; sum begins at zero
 
+; init rcx to the size of array
+mov rcx, r14
+; add together all the values in array
 summation:
 
+; must subtract 8 to get "index"
 addsd xmm15, [8 * rcx + r15 - 8]
 loop summation
 
+; divide to get avg
+divsd xmm15, r14
 
 ;BEGIN .TEXT POSTREQS
 ;Send back length of "third" side
