@@ -123,6 +123,15 @@ call input_array
 ; now store *true* size of array
 mov r15, rax
 
+
+;BEGIN MANAGER I/O
+; acknowledge array received
+mov rax, 0
+mov rdi, msg_arr_rx
+call printf
+;END MANAGER I/O
+
+
 ; compute the mean
 mov rax, 0
 mov rdi, array
@@ -141,12 +150,19 @@ call compute_variance
 ; store variance for later
 movsd xmm14, xmm0
 
+;BEGIN MANAGER I/O
+; output the variance of the array
+mov rax, 1
+mov rdi, msg_arr_var
+movsd xmm0, xmm14
+call printf
+;END MANAGER I/O
 
 ;BEGIN .TEXT POSTREQS
-;Send back length of "third" side
+;Send back the variance of the array
 push qword 0
 push qword 0
-movsd [rsp], xmm15
+movsd [rsp], xmm14
 
 ;Restore the values to non-GPRs
 mov rax,7
