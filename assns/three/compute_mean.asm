@@ -85,8 +85,15 @@ xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
 
-; use loop instruction and rcx
+; will use loop instruction and rcx
+mov r15, rdi      ; pointer to front of array
+mov rcx, rsi      ; size of array (# elements)
+movsd xmm15, 0.0  ; sum begins at zero
 
+summation:
+
+addsd xmm15, [8 * rcx + r15 - 8]
+loop summation
 
 
 ;BEGIN .TEXT POSTREQS
