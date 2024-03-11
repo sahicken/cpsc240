@@ -1,21 +1,9 @@
-#include <stdio.h>
-#include <math.h>
+#include <cmath>
 
-// Function to calculate the variance of an array of numbers
-double calculate_variance(double arr[], int n) {
-    double mean = 0.0, variance = 0.0;
-
-    // Calculate the mean
-    for (int i = 0; i < n; ++i) {
-        mean += arr[i];
+double calculateVariance(double arr[], int size, double mean) {
+    double variance = 0.0;
+    for (int i = 0; i < size; i++) {
+        variance += std::pow(arr[i] - mean, 2);
     }
-    mean /= n;
-
-    // Calculate the variance
-    for (int i = 0; i < n; ++i) {
-        variance += pow(arr[i] - mean, 2);
-    }
-    variance /= n;
-
-    return variance;
+    return variance / size;
 }
