@@ -92,11 +92,12 @@ movsd xmm15, 0.0  ; sum begins at zero
 
 ; init rcx to the size of array
 mov rcx, r14
+sub rcx, 1
 ; add together all the values in array
 summation:
 
-; must subtract 8 to get "index"
-addsd xmm15, [8 * rcx + r15 - 8]
+; add each index (descending order)
+addsd xmm15, [r15 + 8 * rcx]
 loop summation
 
 ; divide to get avg
