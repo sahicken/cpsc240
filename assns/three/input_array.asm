@@ -90,7 +90,7 @@ jmp begin_loop
 ; inform user of invalid input
 invalid_input:
 mov rax, 0
-mov rdi, stringFormat
+mov rdi, fmt_str
 mov rsi, invalid 
 call printf
 jmp begin_loop ; repeat loop
