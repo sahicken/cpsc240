@@ -24,11 +24,17 @@ nasm -f elf64 -l compute_mean.lis -o compute_mean.o compute_mean.asm
 echo "Compile the source file driver.c"
 gcc  -m64 -Wall -no-pie -o driver.o -std=c2x -c driver.c
 
-#echo "Link the object modules to create an executable file"
-#gcc -m64 -no-pie -o triangle.out isfloat.o manager.o driver.o -std=c2x -Wall -z noexecstack -lm
+echo "Compile the source file output_array.c"
+gcc  -m64 -Wall -no-pie -o output_array.o -std=c2x -c output_array.c
 
-echo "Execute the program to calculate triangles"
-#chmod +x triangle.out
-#./triangle.out
+echo "Compile the source file compute_variance.c"
+g++  -m64 -Wall -no-pie -o compute_variance.o -std=c++11 -c compute_variance.cpp
+
+#echo "Link the object modules to create an executable file"
+g++ -m64 -no-pie -o variance.out isfloat.o manager.o driver.o input_array.o output_array.o compute_mean.o compute_variance.o -std=c++11 -Wall -z noexecstack -lm
+
+echo "Execute the program to calculate variance"
+chmod +x variance.out
+./variance.out
 
 echo "This bash script will now terminate."
