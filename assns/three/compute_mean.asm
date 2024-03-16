@@ -55,6 +55,8 @@ align 64
 ; required for xstor and xrstor instructions
 backup_storage_area resb 832
 
+zero dq 0.0
+
 segment .text
 
 manager:
@@ -86,9 +88,9 @@ xsave [backup_storage_area]
 
 
 ; will use loop instruction and rcx
-mov r15, rdi      ; pointer to front of array
-mov r14, rsi      ; size of array (# elements)
-movsd xmm15, 0.0  ; sum begins at zero
+mov r15, rdi         ; pointer to front of array
+mov r14, rsi         ; size of array (# elements)
+movsd xmm15, [zero]  ; sum begins at zero
 
 ; init rcx to the size of array
 mov rcx, r14
