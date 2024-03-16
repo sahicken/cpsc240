@@ -28,10 +28,10 @@ echo "Compile the source file output_array.c"
 gcc  -m64 -Wall -no-pie -o output_array.o -std=c2x -c output_array.c
 
 echo "Compile the source file compute_variance.c"
-g++  -m64 -Wall -no-pie -o compute_variance.o -std=c++11 -c compute_variance.cpp
+g++  -m64 -Wall -fno-pie -no-pie -o compute_variance.o -std=c++20 -c compute_variance.cpp
 
 #echo "Link the object modules to create an executable file"
-g++ -m64 -no-pie -o variance.out isfloat.o manager.o driver.o input_array.o output_array.o compute_mean.o compute_variance.o -std=c++11 -Wall -z noexecstack -lm
+g++ -m64 -no-pie -o variance.out isfloat.o driver.o input_array.o output_array.o compute_mean.o compute_variance.o manager.o -Wall -z noexecstack -lm
 
 echo "Execute the program to calculate variance"
 chmod +x variance.out

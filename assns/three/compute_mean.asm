@@ -43,10 +43,12 @@
 
 ;Declaration section, everything here does not have its own place of declaration
 
-global manager
+global compute_mean
 
 segment .data
 ;This section (or segment) is for declaring initialized arrays
+
+zero dq 0.0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -55,11 +57,9 @@ align 64
 ; required for xstor and xrstor instructions
 backup_storage_area resb 832
 
-zero dq 0.0
-
 segment .text
 
-manager:
+compute_mean:
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -103,7 +103,8 @@ addsd xmm15, [r15 + 8 * rcx]
 loop summation
 
 ; divide to get avg
-divsd xmm15, r14
+movq xmm14, r14
+divsd xmm15, xmm14
 
 ;BEGIN .TEXT POSTREQS
 ;Send back length of "third" side

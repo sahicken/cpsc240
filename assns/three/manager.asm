@@ -43,11 +43,12 @@
 
 ;Declaration section, everything here does not have its own place of declaration
 
+global manager
+
 extern printf
 extern input_array
 extern compute_mean
 extern compute_variance
-global manager
 
 arr_sz equ 12
 
