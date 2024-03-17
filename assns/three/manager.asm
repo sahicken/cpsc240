@@ -20,8 +20,8 @@
 ;  Date program began: 2024-Mar-1
 ;  Date of last update: 2024-Mar-17
 ;  Files in this program: driver.c, manager.asm, isfloat.asm, compute_variance.cpp, r.sh, rg.sh, input_array.asm, output_array.c, compute_mean.asm
-;  Testing: compiles
-;  Status: broken
+;  Testing: done
+;  Status: working
 ;
 ;Purpose
 ;  This program inputs arrays (double precision) and calculates variance

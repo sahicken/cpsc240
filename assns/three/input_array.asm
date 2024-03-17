@@ -20,8 +20,8 @@
 ;  Date program began: 2024-Mar-1
 ;  Date of last update: 2024-Mar-17
 ;  Files in this program: driver.c, manager.asm, isfloat.asm, compute_variance.cpp, r.sh, rg.sh, input_array.asm, output_array.c, compute_mean.asm
-;  Testing: compiles
-;  Status: broken
+;  Testing: done
+;  Status: working
 ;
 ;Purpose
 ;  This program inputs arrays (double precision) and calculates variance
@@ -33,7 +33,7 @@
 ;  Assemble (standard): nasm -f elf64 -l file.lis -o file.o file.asm
 ;  Assemble (debug): nasm -f elf64 -gdwarf -l file.lis -o file.o file.asm
 ;  Optimal print specification: Landscape, 7 points, monospace, 8½x11 paper
-;  Prototype of this function: double file();
+;  Prototype of this function: int file();
 ;
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 
