@@ -1,47 +1,41 @@
 ;****************************************************************************************************************************
-;Program name: "isfloat".  This a library function contained in a single file.  The function receives a null-terminated     *
-;array of char and either verifies that the array can be converted to a 64-bit float or denies that such a conversion is    *
-;possible.  Copyright (C) 2022 Floyd Holliday.                                                                              *
-;                                                                                                                           *
-;This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public   *
-;License version 3 as published by the Free Software Foundation.  This program is distributed in the hope that it will be   *
-;useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.*
-;See the GNU Lesser General Public License for more details. A copy of the GNU General Public License v3 is available here: *
-;<https:;www.gnu.org/licenses/>.                            *
+; Program name: "Variance".  This program calculates the variance of a list of doubles.     *
+;                                                                                                                            *
+; This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License  *
+; version 3 as published by the Free Software Foundation.  This program is distributed in the hope that it will be useful,   *
+; but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See   *
+; the GNU General Public License for more details A copy of the GNU General Public License v3 is available here:             *
+; <https://www.gnu.org/licenses/>.                                                                                           *
 ;****************************************************************************************************************************
-;
-;
+
+
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 ;Author information
-;  Author name: Floyd Holliday
-;  Author email: holliday@fullerton.edu
-;  Author phone (wired phone in CS building): (657)278-7021
+;  Author name: Steven Hicken
+;  Author email: sahicken@csu.fullerton.edu
 ;
-;Status
-;  This software is not an application program, but rather it is a single function licensed for use by other applications.
-;  This function can be embedded within both FOSS programs and in proprietary programs as permitted by the LGPL.
-
-;Function information
-;  Function name: isfloat
-;  Programming language: X86 assembly in Intel syntax.
-;  Date development began:  2022-Feb-28
-;  Date version 1.0 finished: 2022-Mar-03
-;  Files of this function: isfloat.asm
-;  System requirements: an X86 platform with nasm installed o other compatible assembler.
-;  Know issues: <now in testing phase>
-;  Assembler used for testing: Nasm version 2.14.02
-;  Prototype: bool isfloat(char *);
+;Program information
+;  Program name: Variance
+;  Programming languages: 3 modules in C, 3 in X86, 1 in C++, and 2 in bash.
+;  Date program began: 2024-Mar-1
+;  Date of last update: 2024-Mar-17
+;  Files in this program: driver.c, manager.asm, isfloat.asm, compute_variance.cpp, r.sh, rg.sh, input_array.asm, output_array.c, compute_mean.asm
+;  Testing: compiles
+;  Status: broken
 ;
 ;Purpose
-;  This function wil accept a string (array of char) and verify that it can be converted to a corresponding 64-bit 
-;  float number or not converted to a float number.
+;  This program inputs arrays (double precision) and calculates variance
 ;
-;Translation information
-;  Assemble: nasm -f elf64 -l isfloat.lis -o isfloat.o isfloat.asm
+;This file:
+;  File name: file.asm
+;  Language: X86-64
+;  Max page width: 124 columns
+;  Assemble (standard): nasm -f elf64 -l file.lis -o file.o file.asm
+;  Assemble (debug): nasm -f elf64 -gdwarf -l file.lis -o file.o file.asm
+;  Optimal print specification: Landscape, 7 points, monospace, 8½x11 paper
+;  Prototype of this function: double file();
 ;
-;Software design document:
-;  An Execution flow chart accompanies this function.  That document will provide a better understanding of the 
-;  algorithm used in the isfloat function than a direct reading of the source code of the function.
+;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 
 ;========= Begin source code ====================================================================================
 ;Declaration area

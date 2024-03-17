@@ -1,5 +1,5 @@
 ;****************************************************************************************************************************
-; Program name: "Variance".  This program calculates the average driving time of a driver moving around NOC.     *
+; Program name: "Variance".  This program calculates the variance of a list of doubles.     *
 ;                                                                                                                            *
 ; This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License  *
 ; version 3 as published by the Free Software Foundation.  This program is distributed in the hope that it will be useful,   *
@@ -9,7 +9,6 @@
 ;****************************************************************************************************************************
 
 
-
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 ;Author information
 ;  Author name: Steven Hicken
@@ -17,31 +16,29 @@
 ;
 ;Program information
 ;  Program name: Variance
-;  Programming languages: One module in C, one in X86, and one in bash.
-;  Date program began: 2024-Feb-19
-;  Date of last update: 2024-Feb-23
-;  Files in this program: driver.c, manager.asm, isfloat.asm, r.sh, input_array.asm, output_array.c
-;  Testing: working
-;  Status: alpha
+;  Programming languages: 3 modules in C, 3 in X86, 1 in C++, and 2 in bash.
+;  Date program began: 2024-Mar-1
+;  Date of last update: 2024-Mar-17
+;  Files in this program: driver.c, manager.asm, isfloat.asm, compute_variance.cpp, r.sh, rg.sh, input_array.asm, output_array.c, compute_mean.asm
+;  Testing: compiles
+;  Status: broken
 ;
 ;Purpose
 ;  This program inputs arrays (double precision) and calculates variance
 ;
 ;This file:
-;  File name: manager.asm
+;  File name: file.asm
 ;  Language: X86-64
 ;  Max page width: 124 columns
-;  Assemble (standard): nasm -l manager.lis -o manager.o manager.asm
-;  Assemble (debug): nasm -g dwarf -l manager.lis -o manager.o manager.asm
+;  Assemble (standard): nasm -f elf64 -l file.lis -o file.o file.asm
+;  Assemble (debug): nasm -f elf64 -gdwarf -l file.lis -o file.o file.asm
 ;  Optimal print specification: Landscape, 7 points, monospace, 8½x11 paper
-;  Prototype of this function: double manager();
-; 
-;
-;
+;  Prototype of this function: double file();
 ;
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 
-;Declaration section, everything here does not have its own place of declaration
+;========= Begin source code ====================================================================================
+;Declaration area
 
 global manager
 
