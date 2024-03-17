@@ -124,7 +124,6 @@ call input_array
 ; now store *true* size of array
 mov r15, rax
 
-
 ;BEGIN MANAGER I/O
 ; acknowledge array received
 mov rax, 0

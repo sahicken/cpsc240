@@ -46,6 +46,7 @@ segment .data
 ;This section (or segment) is for declaring initialized arrays
 
 zero dq 0.0
+one dq 1.0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -88,6 +89,7 @@ xsave [backup_storage_area]
 mov r15, rdi         ; pointer to front of array
 mov r14, rsi         ; size of array (# elements)
 movsd xmm15, [zero]  ; sum begins at zero
+movsd xmm14, [zero]
 
 ; init rcx to the size of array
 mov rcx, r14
@@ -97,10 +99,10 @@ summation:
 
 ; add each index (descending order)
 addsd xmm15, [r15 + 8 * rcx]
+addsd xmm14, [one]
 loop summation
 
 ; divide to get avg
-movq xmm14, r14
 divsd xmm15, xmm14
 
 ;BEGIN .TEXT POSTREQS
