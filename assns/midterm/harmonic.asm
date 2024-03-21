@@ -40,12 +40,13 @@
 ;========= Begin source code ====================================================================================
 ;Declaration area
 
-global compute_mean
+global harmonic
 
 segment .data
 ;This section (or segment) is for declaring initialized arrays
 
 zero dq 0.0
+one dq 1.0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
@@ -56,7 +57,7 @@ backup_storage_area resb 832
 
 segment .text
 
-compute_mean:
+harmonic:
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -96,9 +97,10 @@ sub rcx, 1
 summation:
 
 ; add each index (descending order)
-movss xmm2, [r15 + 8 * rcx]
-rcpss
-addsd xmm15, xmm1
+movsd xmm14, [r15 + 8 * rcx]
+movsd xmm13, [one]
+divsd xmm13, xmm14
+addsd xmm15, xmm13
 loop summation
 
 ;BEGIN .TEXT POSTREQS

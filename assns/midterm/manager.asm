@@ -44,8 +44,7 @@ global manager
 
 extern printf
 extern input_array
-extern compute_mean
-extern compute_variance
+extern harmonic
 
 arr_sz equ 12
 
@@ -136,18 +135,8 @@ call printf
 mov rax, 0
 mov rdi, array
 mov rsi, r15
-call compute_mean
+call harmonic
 ; store mean for later use
-movsd xmm15, xmm0
-
-; compute variance
-mov rax, 1
-mov rdi, array
-mov rsi, r15
-; this is the mean from before
-movsd xmm0, xmm15
-call compute_variance
-; store variance for later
 movsd xmm14, xmm0
 
 ;BEGIN MANAGER I/O

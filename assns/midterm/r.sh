@@ -18,23 +18,20 @@ nasm -f elf64 -l isfloat.lis -o isfloat.o isfloat.asm
 echo "Assemble the source file input_array.asm"
 nasm -f elf64 -l input_array.lis -o input_array.o input_array.asm
 
-echo "Assemble the source file compute_mean.asm"
-nasm -f elf64 -l compute_mean.lis -o compute_mean.o compute_mean.asm
+echo "Assemble the source file harmonic.asm"
+nasm -f elf64 -l harmonic.lis -o harmonic.o harmonic.asm
 
-echo "Compile the source file driver.c"
-gcc -m64 -Wall -no-pie -o driver.o -std=c2x -c driver.c
+echo "Compile the source file main.c"
+gcc -m64 -Wall -no-pie -o main.o -std=c2x -c main.c
 
 echo "Compile the source file output_array.c"
 gcc -m64 -Wall -no-pie -o output_array.o -std=c2x -c output_array.c
 
-echo "Compile the source file compute_variance.c"
-g++ -m64 -Wall -fno-pie -no-pie -o compute_variance.o -std=c++11 -c compute_variance.cpp
-
 #echo "Link the object modules to create an executable file"
-g++ -m64 -no-pie -o variance.out isfloat.o driver.o input_array.o output_array.o compute_mean.o compute_variance.o manager.o -Wall -z noexecstack -lm
+g++ -m64 -no-pie -o h.out isfloat.o main.o input_array.o output_array.o harmonic.o manager.o -Wall -z noexecstack -lm
 
-echo "Execute the program to calculate variance"
-chmod +x variance.out
-./variance.out
+echo "Execute the program to calculate harmonic sum"
+chmod +x h.out
+./h.out
 
 echo "This bash script will now terminate."
