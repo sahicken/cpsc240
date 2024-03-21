@@ -103,6 +103,12 @@ divsd xmm13, xmm14
 addsd xmm15, xmm13
 loop summation
 
+; add the last "missing" number
+movsd xmm14, [r15]
+movsd xmm13, [one]
+divsd xmm13, xmm14
+addsd xmm15, xmm13
+
 ;BEGIN .TEXT POSTREQS
 ;Send back length of "third" side
 push qword 0

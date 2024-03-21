@@ -51,12 +51,12 @@ arr_sz equ 12
 segment .data
 ;This section (or segment) is for declaring initialized arrays
 
-msg_arr_tx_aofb db "This program will manage your arrays of 64-bit floats",10,0
-msg_arr_tx_bofb db "For the array enter a sequence of 64-bit floats separated by white space.",10,0
+msg_arr_tx_aofb db "This program will fulfill all your harmonic needs",10,0
+msg_arr_tx_bofb db "Enter a sequence of 64-bit floats separated by white space.",10,0
 prompt_arr_tx db "After the last input press enter followed by Control+D: ",0
 
-msg_arr_rx db "These number were received and placed into an array",10,0
-msg_arr_var db "The variance of the inputted numbers is %lf",10,0
+msg_arr_rx db "These numbers are in the array",10,0
+msg_arr_var db "The harmonic sum has been calculated to be %lf",10,0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
