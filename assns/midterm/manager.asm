@@ -45,6 +45,7 @@ global manager
 extern printf
 extern input_array
 extern harmonic
+extern output_array
 
 arr_sz equ 12
 
@@ -55,7 +56,7 @@ msg_arr_tx_aofb db "This program will fulfill all your harmonic needs",10,0
 msg_arr_tx_bofb db "Enter a sequence of 64-bit floats separated by white space.",10,0
 prompt_arr_tx db "After the last input press enter followed by Control+D: ",0
 
-msg_arr_rx db "These numbers are in the array",10,0
+msg_arr_rx db "These numbers are in the array",0
 msg_arr_var db "The harmonic sum has been calculated to be %lf",10,0
 
 segment .bss
@@ -130,6 +131,10 @@ mov rdi, msg_arr_rx
 call printf
 ;END MANAGER I/O
 
+mov rax, 0
+mov rdi, array
+mov rsi, r15
+call output_array
 
 ; compute the mean
 mov rax, 0
