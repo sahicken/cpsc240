@@ -43,21 +43,25 @@
 global manager
 
 extern printf
-extern input_array
-extern compute_mean
-extern compute_variance
+extern fill_random_array
+extern normalize_array
+extern show_array
 
-arr_sz equ 12
+arr_sz equ 100
 
 segment .data
 ;This section (or segment) is for declaring initialized arrays
+prompt_name db "Please enter your name: ",0
+prompt_title db "Please enter your title (Mr,Ms,Sargent,Chief,Project Leader,etc): ",0
+msg_greeting db "Nice to meet you %s %s",10,0
 
-msg_arr_tx_aofb db "This program will manage your arrays of 64-bit floats",10,0
-msg_arr_tx_bofb db "For the array enter a sequence of 64-bit floats separated by white space.",10,0
-prompt_arr_tx db "After the last input press enter followed by Control+D: ",0
+msg_arr_gen db "This program will generate 64-bit IEEE float numbers",10,0
+prompt_arr_sz db "How many numbers do you want? Today’s limit is 100 per customer: ",0
+msg_arr_show db "Your numbers have been stored in an array. Here is that array.",10,0
 
-msg_arr_rx db "These number were received and placed into an array",10,0
-msg_arr_var db "The variance of the inputted numbers is %lf",10,0
+msg_arr_norm db "The array will now be normalized to the range 1.0 to 2.0  Here is the normalized array",10,0
+msg_arr_sort db "The array will now be sorted",10,0
+msg_goodbye db "Good bye %s. You are welcome any time.",10,0
 
 segment .bss
 ;This section (or segment) is for declaring empty arrays
