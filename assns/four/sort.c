@@ -1,10 +1,25 @@
-#include <stdio.h>
-
-// Function declaration with pointer and size parameters
-void output_my_array(double* my_array, int my_array_size) {
-    printf("Array my_array contents:\n");
-    for (int i = 0; i < my_array_size; i++) {
-        printf("%lf ", my_array[i]);
+// Sorting function (bubble sort)
+void sort(int *array, int size)
+{
+    int swapped;
+    for (int i = 0; i < size - 1; ++i)
+    {
+        swapped = 0;
+        for (int j = 0; j < size - i - 1; ++j)
+        {
+            if (array[j] > array[j + 1])
+            {
+                // Swap elements without using a separate swap function
+                array[j] = array[j] + array[j + 1];
+                array[j + 1] = array[j] - array[j + 1];
+                array[j] = array[j] - array[j + 1];
+                swapped = 1;
+            }
+        }
+        // If no two elements were swapped in the inner loop, the array is already sorted
+        if (!swapped)
+        {
+            break;
+        }
     }
-    printf("\n");
 }
