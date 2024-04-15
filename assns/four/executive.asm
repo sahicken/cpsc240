@@ -39,15 +39,19 @@
 
 ;========= Begin source code ====================================================================================
 ;Declaration area
+global executive
 
-global manager
-
+extern fgets
+extern scanf
+extern stdin
+extern strlen
 extern printf
 extern fill_random_array
 extern normalize_array
 extern show_array
 
-arr_sz equ 100
+easy_str_sz equ 50 ; strings < 50 bytes
+arr_sz equ 100 ; support 100 numbers max
 
 segment .data
 ;This section (or segment) is for declaring initialized arrays
@@ -63,6 +67,8 @@ msg_arr_norm db "The array will now be normalized to the range 1.0 to 2.0  Here 
 msg_arr_sort db "The array will now be sorted",10,0
 msg_goodbye db "Good bye %s. You are welcome any time.",10,0
 
+fmt_int db "%d",0
+
 segment .bss
 ;This section (or segment) is for declaring empty arrays
 
@@ -72,9 +78,13 @@ backup_storage_area resb 832
 
 array resq arr_sz
 
+name resb easy_str_sz
+title resb easy_str_sz
+
 segment .text
 
-manager:
+
+executive:
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -102,71 +112,104 @@ xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
 
-
-;BEGIN MANAGER I/O
+;BEGIN NAME I/O
 ; output prompt for name
 mov rax, 0
-mov rdi, msg_arr_tx_aofb
+mov rdi, prompt_name
 call printf
 
+; input name
 mov rax, 0
-mov rdi, msg_arr_tx_bofb
-call printf
+mov rdi, name
+mov rsi, easy_str_sz
+mov rdx, [stdin]
+call fgets
 
+; remove newline from name
 mov rax, 0
-mov rdi, prompt_arr_tx
-call printf
-;END MANAGER I/O
+mov rdi, name
+call strlen
+mov [name+rax-1], byte 0
+;END NAME I/O
 
-; input the array of floats
+
+
+;BEGIN TITLE I/O
+; output prompt for tile
+mov rax, 0
+mov rdi, prompt_title
+call printf
+
+; input title
+mov rax, 0
+mov rdi, title
+mov rsi, easy_str_sz
+mov rdx, [stdin]
+call fgets
+
+; remove newline (title)
+mov rax, 0
+mov rdi, title
+call strlen
+mov [title+rax-1], byte 0
+;END TITLE I/O
+
+
+; GREETING BEGIN
+mov rax, 0
+mov rdi, msg_greeting
+mov rsi, title
+mov rdx, name
+call printf
+; GREETING END
+
+;msg_arr_gen db "This program will generate 64-bit IEEE float numbers",10,0
+;prompt_arr_sz db "How many numbers do you want? Today’s limit is 100 per customer: ",0
+;msg_arr_show db "Your numbers have been stored in an array. Here is that array.",10,0
+
+; announce to the user the array generation
+mov rax, 0
+mov rdi, msg_arr_gen
+call printf
+
+; print a nice looking prompt
+mov rax, 0
+mov rdi, prompt_arr_sz
+call printf
+
+; input the size (request)
+mov rax, 0
+mov rdi, fmt_int
+mov rsi, rsp
+call scanf
+mov r15, [rsp]
+
+; ensure it's not too big (over 100)
+cmp r15, arr_sz
+jg too_big
+jmp ok
+too_big:
+mov r15, arr_sz
+ok:
+; not too big now, yay!
+
+; setup fill array fxn call
 mov rax, 0
 ; move the pointer into 1st arg
 mov rdi, array
 ; 2nd arg is max size of array
-mov rsi, arr_sz
-call input_array
-; now store *true* size of array
-mov r15, rax
+mov rsi, r15
+call fill_random_array
 
-;BEGIN MANAGER I/O
-; acknowledge array received
+; inform use of successful fill
 mov rax, 0
-mov rdi, msg_arr_rx
+mov rdi, msg_arr_show
 call printf
-;END MANAGER I/O
 
-
-; compute the mean
 mov rax, 0
 mov rdi, array
 mov rsi, r15
-call compute_mean
-; store mean for later use
-movsd xmm15, xmm0
-
-; compute variance
-mov rax, 1
-mov rdi, array
-mov rsi, r15
-; this is the mean from before
-movsd xmm0, xmm15
-call compute_variance
-; store variance for later
-movsd xmm14, xmm0
-
-;BEGIN MANAGER I/O
-; output the variance of the array
-mov rax, 1
-mov rdi, msg_arr_var
-movsd xmm0, xmm14
-call printf
-;END MANAGER I/O
-
-;BEGIN .TEXT POSTREQS
-;Send back the variance of the array
-push qword 0
-push qword 0
-movsd [rsp], xmm14
+call show_array
 
 ;Restore the values to non-GPRs
 mov rax,7

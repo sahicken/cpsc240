@@ -44,9 +44,10 @@ extern printf
 extern scanf
 extern isfloat
 extern atof
+extern is_nan
 
 ; name of "this" asm file/fxn
-global input_array
+global fill_random_array
 
 section .data
 
@@ -61,7 +62,7 @@ backup_storage_area resb 832
 
 section .text
 
-input_array:
+fill_random_array:
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -92,59 +93,28 @@ xsave [backup_storage_area]
 
 mov r13, rdi   ; pointer to front of array
 mov r14, rsi   ; size of array (# elements)
-mov r15, 0     ; counter = 0 (change to rcx)
+;mov r15, 0    ; counter = 0 (change to rcx)
 sub rsp, 1024  ; set asisde space on stack
+mov rcx, r13   ; we're using rcx now
 
+fill:
 
+; create and validate our rng
+rng:
+rdrand r12
 
-; BEGIN LOOP
-begin_loop:
-; take user input
+; now validate
 mov rax, 0
-mov rdi, fmt_str
-mov rsi, rsp
-call scanf
+mov rdi, r12
+call is_nan
+cmp rax, 0          ; Checks is_nan
+je rng              ; redo if false
 
-; tests ctrl-D (several 1's aka -1)
-cdqe
-cmp rax, -1
-je end_loop
+mov [r13 + 8 * rcx], r12   ; Copies "float" into array
 
-; now validate the input
-mov rax, 0
-mov rdi, rsp
-call isfloat
-cmp rax, 0                    ; Checks to see if isfloat is false
-je invalid_input              ; jump to invalid_input if false
+loop fill
 
-mov rax, 0
-mov rdi, rsp
-call atof
-movsd [r13 + 8 * r15], xmm0   ; Copies float into array
-
-inc r15                       ; Increments counter (by 1)
-; Tests array capacity
-cmp r15, r14                  ; Compares current index with size
-je end_loop                   ; If index equals size, exit
-; Restarts loop.
-jmp begin_loop
-
-; inform user of invalid input
-invalid_input:
-mov rax, 0
-mov rdi, fmt_str
-mov rsi, invalid 
-call printf
-jmp begin_loop ; repeat loop
-; END LOOP
-
-
-
-; loop ends after ctrl-D
-end_loop:
 add rsp, 1024
-
-
 
 ;BEGIN .TEXT POSTREQS
 ;Restore the values to non-GPRs
@@ -154,6 +124,7 @@ xrstor [backup_storage_area]
 
 ;return value size
 mov rax, r15
+
 
 ;Restore the GPRs
 popf

@@ -20,8 +20,8 @@
 ;  Date program began: 2024-Mar-1
 ;  Date of last update: 2024-Mar-17
 ;  Files in this program: driver.c, manager.asm, isfloat.asm, compute_variance.cpp, r.sh, rg.sh, input_array.asm, output_array.c, compute_mean.asm
-;  Testing: compiles
-;  Status: broken
+;  Testing: done
+;  Status: working
 ;
 ;Purpose
 ;  This program inputs arrays (double precision) and calculates variance
@@ -33,31 +33,25 @@
 ;  Assemble (standard): nasm -f elf64 -l file.lis -o file.o file.asm
 ;  Assemble (debug): nasm -f elf64 -gdwarf -l file.lis -o file.o file.asm
 ;  Optimal print specification: Landscape, 7 points, monospace, 8½x11 paper
-;  Prototype of this function: double file();
+;  Prototype of this function: int file();
 ;
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 
 ;========= Begin source code ====================================================================================
 ;Declaration area
 
-global compute_mean
+; name of "this" asm file/fxn
+global normalize_array
 
-segment .data
-;This section (or segment) is for declaring initialized arrays
-
-zero dq 0.0
-one dq 1.0
-
-segment .bss
-;This section (or segment) is for declaring empty arrays
+section .bss
 
 align 64
 ; required for xstor and xrstor instructions
 backup_storage_area resb 832
 
-segment .text
+section .text
 
-compute_mean:
+normalize_array:
 
 ;BEGIN .TEXT PREREQS
 ; backup GPRs (General Purpose Registers)
@@ -85,40 +79,36 @@ xsave [backup_storage_area]
 ;END .TEXT PREREQS
 
 
-; will use loop instruction and rcx
-mov r15, rdi         ; pointer to front of array
-mov r14, rsi         ; size of array (# elements)
-movsd xmm15, [zero]  ; sum begins at zero
-movsd xmm14, [zero]
 
-; init rcx to the size of array
-mov rcx, r14
-sub rcx, 1
-; add together all the values in array
-summation:
+mov r13, rdi   ; pointer to front of array
+mov r14, rsi   ; size of array (# elements)
+;mov r15, 0    ; counter = 0 (change to rcx)
+sub rsp, 1024  ; set asisde space on stack
+mov rcx, r13   ; we're using rcx now
 
-; add each index (descending order)
-addsd xmm15, [r15 + 8 * rcx]
-addsd xmm14, [one]
-loop summation
+begin:
 
-; divide to get avg
-divsd xmm15, xmm14
+mov r12, [r13 + 8 * rcx]  ; Copies "float" into r register
+
+shl r12, 12 ; 0x4A93 4D97 C26A F000 <= Shift left 12 bits
+shr r12, 12 ; 0x0004 A934 D97C 26AF <= Shift right 12 bits
+mov rax, 0x3FF0000000000000 ; Create a mask with 3FF at front
+or r12, rax ; Combine the mask with the shifted numb
+
+mov [r13 + 8 * rcx], r12  ; moves in normalized float
+
+loop begin
+
+add rsp, 1024
 
 ;BEGIN .TEXT POSTREQS
-;Send back length of "third" side
-push qword 0
-push qword 0
-movsd [rsp], xmm15
-
 ;Restore the values to non-GPRs
 mov rax,7
 mov rdx,0
 xrstor [backup_storage_area]
 
-movsd xmm0, [rsp]
-pop rax
-pop rax
+;return value size
+mov rax, r13
 
 ;Restore the GPRs
 popf
