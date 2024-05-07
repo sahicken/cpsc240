@@ -107,11 +107,19 @@ producer:
     push qword 0
     movsd [rsp], xmm12
 
+
+
     ;------------;-----------BEGIN SEGMENT .TEXT ~POST~ REQS------------;----------------;
     ;Restore the values to non-GPRs
     mov rax,7
     mov rdx,0
     xrstor [backup_storage_area]
+
+    ; return the ~answer~
+    movsd xmm0, [rsp]
+    pop rax
+    pop rax
+    
     ;Restore the GPRs
     popf
     pop r15
@@ -130,9 +138,6 @@ producer:
     pop rbp ;Restore rbp to the base of the activation record of the caller program
     ;-------------;----------END SEGMENT .TEXT ~POST~ REQS--------------;----------------;
 
-    ; return the ~answer~
-    movsd xmm0, [rsp]
-    pop rax
-    pop rax
+
 
     ret
