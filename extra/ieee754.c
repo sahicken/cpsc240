@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h> // For memcpy
 
+extern double getrandom();
+
 void printDoubleAsHex(double myDouble) {
     unsigned long long intBits;
     memcpy(&intBits, &myDouble, sizeof(intBits));
@@ -9,7 +11,7 @@ void printDoubleAsHex(double myDouble) {
 }
 
 int main(void) {
-    double myDouble = 23.7; // Replace with your desired value
+    double myDouble = getrandom(); // Replace with your desired value
     printDoubleAsHex(myDouble);
     return 0;
 }
