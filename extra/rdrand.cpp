@@ -1,7 +1,7 @@
 extern int is_nan();
 double random_number;
 
-double getrandom()
+extern "C" double getrandom()
 {
     asm(".intel_syntax noprefix");
     asm("push r15");
